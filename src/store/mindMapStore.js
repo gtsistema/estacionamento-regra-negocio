@@ -179,6 +179,34 @@ export const useMindMapStore = create(
         }));
       },
 
+      // Conectar nó filho a outro pai (arrasta-e-solta)
+      connectNodes(childId, newParentId) {
+        const nodes = get().getCurrentNodes();
+        const child = nodes.find(n => n.id === childId);
+        const newParent = nodes.find(n => n.id === newParentId);
+        if (!child || !newParent || childId === newParentId) return;
+
+        // Verificar se não é ancestor (evitar ciclo)
+        const getAncestors = (pid) => {
+          const parent = nodes.find(n => n.id === pid);
+          if (!parent || !parent.parentId) return [];
+          return [parent.parentId, ...getAncestors(parent.parentId)];
+        };
+        if (getAncestors(newParentId).includes(childId)) return;
+
+        set(s => ({
+          maps: s.maps.map(m => m.id === s.currentMapId
+            ? {
+                ...m,
+                nodes: m.nodes.map(n => n.id === childId
+                  ? { ...n, parentId: newParentId, color: newParent.color || n.color, updatedAt: new Date().toISOString() }
+                  : n),
+                updatedAt: new Date().toISOString(),
+              }
+            : m),
+        }));
+      },
+
       // ─── UI actions ───────────────────────────────────────
       selectNode(id) { set({ selectedNodeId: id, rightPanelOpen: !!id }); },
       toggleSidebar() { set(s => ({ sidebarOpen: !s.sidebarOpen })); },
