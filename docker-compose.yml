@@ -1,0 +1,11 @@
+services:
+  mapa-mental:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mapa-mental:latest
+    container_name: mapa-mental
+    restart: unless-stopped
+    ports:
+      # Mude para "80:80" se quiser a app direto na porta HTTP da VPS
+      - "8080:80"

@@ -48,7 +48,6 @@ export default function MindMapCanvas() {
   const selectedNodeId  = useMindMapStore(s => s.selectedNodeId);
   const selectNode      = useMindMapStore(s => s.selectNode);
   const updateNodePos   = useMindMapStore(s => s.updateNodePosition);
-  const connectNodes   = useMindMapStore(s => s.connectNodes);
   const searchQuery     = useMindMapStore(s => s.searchQuery);
   const filters         = useMindMapStore(s => s.filters);
 
@@ -121,12 +120,6 @@ export default function MindMapCanvas() {
     selectNode(node.id);
   }, [selectNode]);
 
-  const onConnect = useCallback((connection) => {
-    if (connection.source && connection.target) {
-      connectNodes(connection.target, connection.source);
-    }
-  }, [connectNodes]);
-
   const onPaneClick = useCallback(() => {
     selectNode(null);
   }, [selectNode]);
@@ -137,7 +130,6 @@ export default function MindMapCanvas() {
         nodes={rfNodes}
         edges={rfEdges}
         onNodesChange={onNodesChange}
-        onConnect={onConnect}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
         nodeTypes={NODE_TYPES}
