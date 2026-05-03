@@ -194,9 +194,14 @@ export const useMindMapStore = create(
       name: 'mindflow-v2',
       version: 2,
       onRehydrateStorage: () => (state) => {
+        if (!state) return;
         // Ensure GTSystem map always exists after rehydration
-        if (state && state.maps && !state.maps.find(m => m.id === 'map-gtsystem')) {
+        if (state.maps && !state.maps.find(m => m.id === 'map-gtsystem')) {
           state.maps = [gtsystemMap, ...state.maps];
+        }
+        // Always start at step 1 when the app loads
+        if (state.maps) {
+          state.maps = state.maps.map(m => ({ ...m, currentStep: 1 }));
         }
       },
     }
